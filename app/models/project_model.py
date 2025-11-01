@@ -16,8 +16,3 @@ class Project(Base):
     users_access = relationship(
         "UserProject", back_populates="project", cascade="all, delete"
     )
-
-
-from .user_model import User
-from .document_model import Document
-from .user_project_model import UserProject

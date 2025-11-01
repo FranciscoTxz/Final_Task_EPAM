@@ -6,3 +6,4 @@ testdb.py
 .flake8
 .coverage
 .env
+example.txt

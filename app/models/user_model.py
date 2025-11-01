@@ -9,6 +9,3 @@ class User(Base):
     name = Column(String, index=True, nullable=False)
     password = Column(String, nullable=False)
     projects_access = relationship("UserProject", back_populates="user")
-
-
-from .project_model import Project

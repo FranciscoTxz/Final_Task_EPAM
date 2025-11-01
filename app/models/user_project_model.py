@@ -12,7 +12,3 @@ class UserProject(Base):
     is_owner = Column(Boolean, default=False, nullable=False)
     user = relationship("User", back_populates="projects_access")
     project = relationship("Project", back_populates="users_access")
-
-
-from .user_model import User
-from .project_model import Project

@@ -1,6 +1,6 @@
 from fastapi import UploadFile
-from app.services.aws_setup import s3_client, AWS_BUCKET_NAME
-import uuid
+# from app.services.aws_setup import s3_client, AWS_BUCKET_NAME
+# import uuid
 
 
 async def upload_file_to_s3(file: UploadFile) -> str:
