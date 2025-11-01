@@ -1,0 +1,10 @@
+.gitignore
+.git
+/app/test.db
+app/test.db
+*__pycache__
+run.txt
+venv312
+testdb.py
+.flake8
+.coverage
