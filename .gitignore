@@ -7,3 +7,4 @@ testdb.py
 .coverage
 .env
 example.txt
+.ruff_cache
