@@ -1,5 +1,5 @@
 from fastapi import Depends, APIRouter, UploadFile, File
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user_model import User
 from app.dependencies import get_db
 from app.schemas.project_schema import (
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/projects", tags=["projects"])
 
 @router.get("", response_model=list[UserProjectWithProject])
 async def get_projects(
-    user: User = Depends(get_authentication_user), db: Session = Depends(get_db)
+    user: User = Depends(get_authentication_user), db: AsyncSession = Depends(get_db)
 ):
     return await project_controller.get_project(user, db)
 
@@ -28,7 +28,7 @@ async def get_projects(
 async def create_project(
     project: ProjectCreate,
     user: User = Depends(get_authentication_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     return await project_controller.create_project(project, user, db)
 
@@ -40,7 +40,7 @@ router_project = APIRouter(prefix="/project", tags=["project"])
 async def get_project_info(
     project_id: int,
     user: User = Depends(get_authentication_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     return await project_controller.get_project_info(project_id, user, db)
 
@@ -50,7 +50,7 @@ async def update_project(
     project_id: int,
     project: ProjectUpdate,
     user: User = Depends(get_authentication_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     return await project_controller.update_project(project_id, project, user, db)
 
@@ -59,7 +59,7 @@ async def update_project(
 async def delete_project(
     project_id: int,
     user: User = Depends(get_authentication_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     return await project_controller.delete_project(project_id, user, db)
 
@@ -68,7 +68,7 @@ async def delete_project(
 async def get_project_documents(
     project_id: int,
     user: User = Depends(get_authentication_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     return await project_controller.get_project_documents(project_id, user, db)
 
@@ -80,7 +80,7 @@ async def create_project_document(
     project_id: int,
     file: UploadFile = File(...),
     user: User = Depends(get_authentication_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     return await project_controller.create_project_document(project_id, file, user, db)
 
@@ -92,6 +92,6 @@ async def invite_user_to_project(
     project_id: int,
     user_id: int,
     user: User = Depends(get_authentication_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     return await project_controller.invite_user_to_project(project_id, user_id, user, db)

@@ -18,10 +18,10 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 
 WORKDIR /app
 
-# Copiar solo archivos de dependencias para cachear instalación
+# Copy only dependency files to cache installation
 COPY pyproject.toml poetry.lock* /app/
 
-# Instalar dependencias (sin el propio paquete del proyecto)
+# Install dependencies (without installing project package)
 RUN poetry install --no-ansi --no-root
 
 # Stage 2: minimal runtime
@@ -44,7 +44,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Copiar binarios y site-packages desde builder (instalados a nivel del sistema)
+# Copy binaries and site-packages from builder (installed system-wide)
 COPY --from=builder /usr/local /usr/local
 
 # Copy the app code
