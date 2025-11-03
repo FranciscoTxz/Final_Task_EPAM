@@ -1,15 +1,4 @@
 services:
-  db:
-    image: postgres:15
-    container_name: postgres_db_final_task
-    restart: always
-    env_file:
-      - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
   web:
     build: .
     container_name: fastapi_final_task
@@ -20,10 +9,3 @@ services:
       - "8000:8000"
     env_file:
       - .env
-    depends_on:
-      - db
-
-volumes:
-  postgres_data:
-
-# QUITAR HARDCODE

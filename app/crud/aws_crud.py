@@ -1,5 +1,6 @@
 from fastapi import UploadFile
-from app.services.aws_setup import s3_client, AWS_BUCKET_NAME, AWS_REGION
+from app.services.aws_setup import s3_client
+from app.config import AWS_BUCKET_NAME, AWS_REGION
 import uuid
 
 
