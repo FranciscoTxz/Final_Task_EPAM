@@ -25,7 +25,7 @@ class DummyDocumentUpdate:
 
 
 def test_get_document_success(monkeypatch):
-    """Get documents for a user: devuelve documento"""
+    """Get document for a user: returns the document"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -60,7 +60,7 @@ def test_get_document_success(monkeypatch):
 
 
 def test_get_document_not_found(monkeypatch):
-    """Get documents for a user: devuelve documento"""
+    """Get document: document not found -> 404"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -82,7 +82,7 @@ def test_get_document_not_found(monkeypatch):
 
 
 def test_get_document_not_project_from_user(monkeypatch):
-    """Get documents for a user: devuelve documento"""
+    """Get document: project not associated with user -> 404"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -112,7 +112,7 @@ def test_get_document_not_project_from_user(monkeypatch):
 
 
 def test_get_document_search_exception(monkeypatch):
-    """Get documents for a user: devuelve documento"""
+    """Get document DB error when fetching -> 500"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -134,7 +134,7 @@ def test_get_document_search_exception(monkeypatch):
 
 
 def test_get_document_project_from_user_exception(monkeypatch):
-    """Get documents for a user: devuelve documento"""
+    """Get document DB error when checking project -> 500"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -164,7 +164,7 @@ def test_get_document_project_from_user_exception(monkeypatch):
 
 
 def test_update_document_success(monkeypatch):
-    """Update documents for a user: devuelve documento"""
+    """Update document for a user: returns updated document"""
     document_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
 
@@ -220,7 +220,7 @@ def test_update_document_success(monkeypatch):
 
 
 def test_update_document_not_found(monkeypatch):
-    """Update documents for a user: devuelve documento"""
+    """Update document: document not found -> 404"""
     document_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
 
@@ -244,7 +244,7 @@ def test_update_document_not_found(monkeypatch):
 
 
 def test_update_document_not_project_user(monkeypatch):
-    """Update documents for a user: devuelve documento"""
+    """Update document: project not associated with user -> 404"""
     document_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
 
@@ -275,7 +275,7 @@ def test_update_document_not_project_user(monkeypatch):
 
 
 def test_update_document_get_document_exception(monkeypatch):
-    """Update documents for a user: devuelve documento"""
+    """Update document DB error when fetching -> 500"""
     document_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
 
@@ -299,7 +299,7 @@ def test_update_document_get_document_exception(monkeypatch):
 
 
 def test_update_document_is_project_from_user_exception(monkeypatch):
-    """Update documents for a user: devuelve documento"""
+    """Update document DB error when checking project -> 500"""
     document_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
 
@@ -331,7 +331,7 @@ def test_update_document_is_project_from_user_exception(monkeypatch):
 
 
 def test_update_document_update_document_exception(monkeypatch):
-    """Update documents for a user: devuelve documento"""
+    """Update document DB error when updating -> 500"""
     document_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
 
@@ -380,7 +380,7 @@ def test_update_document_update_document_exception(monkeypatch):
 
 
 def test_update_document_exception_upload_aws(monkeypatch):
-    """Update documents for a user: devuelve documento"""
+    """Update document AWS upload error -> 500"""
     document_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
 
@@ -434,7 +434,7 @@ def test_update_document_exception_upload_aws(monkeypatch):
 
 
 def test_update_document_exception_delete_aws(monkeypatch):
-    """Update documents for a user: devuelve documento"""
+    """Update document AWS delete error -> 500"""
     document_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
 
@@ -488,7 +488,7 @@ def test_update_document_exception_delete_aws(monkeypatch):
 
 
 def test_delete_document_success(monkeypatch):
-    """Delete documents for a user: OK"""
+    """Delete document for a user: OK"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -527,7 +527,7 @@ def test_delete_document_success(monkeypatch):
 
 
 def test_delete_document_not_found(monkeypatch):
-    """Delete documents for a user: Not Found"""
+    """Delete document: document not found -> 404"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -549,7 +549,7 @@ def test_delete_document_not_found(monkeypatch):
 
 
 def test_delete_document_not_project_user(monkeypatch):
-    """Delete documents for a user: OK"""
+    """Delete document: project not associated with user -> 404"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -578,7 +578,7 @@ def test_delete_document_not_project_user(monkeypatch):
 
 
 def test_delete_document_get_document_exception(monkeypatch):
-    """Delete documents for a user: OK"""
+    """Delete document DB error when fetching -> 500"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -600,7 +600,7 @@ def test_delete_document_get_document_exception(monkeypatch):
 
 
 def test_delete_document_is_project_from_user_exception(monkeypatch):
-    """Delete documents for a user: OK"""
+    """Delete document DB error when checking project -> 500"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -630,7 +630,7 @@ def test_delete_document_is_project_from_user_exception(monkeypatch):
 
 
 def test_delete_document_delete_document_exception(monkeypatch):
-    """Delete documents for a user: OK"""
+    """Delete document DB error when deleting -> 500"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):
@@ -671,7 +671,7 @@ def test_delete_document_delete_document_exception(monkeypatch):
 
 
 def test_delete_document_delete_document_aws_exception(monkeypatch):
-    """Delete documents for a user: OK"""
+    """Delete document AWS delete error -> 500"""
     document_id = 1
 
     async def fake_get_document_by_id(db, document_id: int):

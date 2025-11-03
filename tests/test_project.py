@@ -72,7 +72,7 @@ class DummyUploadFile:
 
 
 def test_get_projects_success(monkeypatch):
-    """Get projects for a user: devuelve la lista de proyectos"""
+    """Get projects for a user: returns the list of projects"""
     test_user_id = 1
 
     async def fake_get_user_projects(db, user_id: int):
@@ -104,7 +104,7 @@ def test_get_projects_success(monkeypatch):
 
 
 def test_get_projects_empty(monkeypatch):
-    """Get projects for a user with no projects: devuelve lista vacía"""
+    """Get projects for a user with no projects: returns empty list"""
     test_user_id = 2
 
     async def fake_get_user_projects(db, user_id: int):
@@ -123,7 +123,7 @@ def test_get_projects_empty(monkeypatch):
 
 
 def test_get_projects_exception(monkeypatch):
-    """Get projects raises exception: lanza HTTPException 500"""
+    """Get projects raises exception: raises HTTPException 500"""
     test_user_id = 3
 
     async def fake_get_user_projects(db, user_id: int):
@@ -143,7 +143,7 @@ def test_get_projects_exception(monkeypatch):
 
 
 def test_post_projects_success(monkeypatch):
-    """Create a new project for a user: devuelve el proyecto creado"""
+    """Create a new project for a user: returns the created project"""
     user = DummyUser(id=1, name="alice", password="secret")
 
     async def fake_get_project_by_name(db, name: str):
@@ -173,7 +173,7 @@ def test_post_projects_success(monkeypatch):
 
 
 def test_post_projects_no_name(monkeypatch):
-    """Create a new project for a user: devuelve el proyecto creado"""
+    """Create a new project for a user: missing name -> 400"""
     user = DummyUser(id=1, name="alice", password="secret")
 
     project = DummyCreateProject(name="", description="NewDesc")
@@ -185,7 +185,7 @@ def test_post_projects_no_name(monkeypatch):
 
 
 def test_post_projects_project_exists(monkeypatch):
-    """Create a new project for a user: devuelve el proyecto creado"""
+    """Create a new project for a user: project exists -> 400"""
     user = DummyUser(id=1, name="alice", password="secret")
 
     async def fake_get_project_by_name(db, name: str):
@@ -202,7 +202,7 @@ def test_post_projects_project_exists(monkeypatch):
 
 
 def test_post_projects_exception_create_project(monkeypatch):
-    """Create a new project for a user: devuelve el proyecto creado"""
+    """Create a new project for a user: DB error creating project -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
 
     async def fake_get_project_by_name(db, name: str):
@@ -223,7 +223,7 @@ def test_post_projects_exception_create_project(monkeypatch):
 
 
 def test_post_projects_exception_create_user_project(monkeypatch):
-    """Create a new project for a user: devuelve el proyecto creado"""
+    """Create a new project for a user: DB error creating user_project -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
 
     async def fake_get_project_by_name(db, name: str):
@@ -250,7 +250,7 @@ def test_post_projects_exception_create_user_project(monkeypatch):
 
 
 def test_get_project_info_success(monkeypatch):
-    """Get project info for a user's project: devuelve la info del proyecto"""
+    """Get project info for a user's project: returns project info"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -272,7 +272,7 @@ def test_get_project_info_success(monkeypatch):
 
 
 def test_get_project_info_no_project(monkeypatch):
-    """Get project info for a user's project and no project exists: devuelve la info del proyecto"""
+    """Get project info when project not found: 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -290,7 +290,7 @@ def test_get_project_info_no_project(monkeypatch):
 
 
 def test_get_project_info_exception_is_project_from_user(monkeypatch):
-    """Get project info raises exception: lanza HTTPException 500"""
+    """Get project info raises exception: HTTPException 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -308,7 +308,7 @@ def test_get_project_info_exception_is_project_from_user(monkeypatch):
 
 
 def test_update_project_success(monkeypatch):
-    """Update project info for a user's project: devuelve la info del proyecto actualizado"""
+    """Update project info for a user's project: returns updated project"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     project_update = DummyProjectUpdate(name="UpdatedName", description="UpdatedDesc")
@@ -342,7 +342,7 @@ def test_update_project_success(monkeypatch):
 
 
 def test_update_project_not_found(monkeypatch):
-    """Update project info for a user's project not found: devuelve la info del proyecto actualizado"""
+    """Update project not found: 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     project_update = DummyProjectUpdate(name="UpdatedName", description="UpdatedDesc")
@@ -364,7 +364,7 @@ def test_update_project_not_found(monkeypatch):
 
 
 def test_update_project_not_owner(monkeypatch):
-    """Update project info for a user's project not owner: devuelve la info del proyecto actualizado"""
+    """Update project when not owner: 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     project_update = DummyProjectUpdate(name="UpdatedName", description="UpdatedDesc")
@@ -390,7 +390,7 @@ def test_update_project_not_owner(monkeypatch):
 
 
 def test_update_project_not_updated(monkeypatch):
-    """Update project info for a user's project exception 1: devuelve la info del proyecto actualizado"""
+    """Update project failed to update: 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     project_update = DummyProjectUpdate(name="UpdatedName", description="UpdatedDesc")
@@ -422,7 +422,7 @@ def test_update_project_not_updated(monkeypatch):
 
 
 def test_update_project_exception_is_project_from_user(monkeypatch):
-    """Update project info for a user's project exception 1: devuelve la info del proyecto actualizado"""
+    """Update project DB error when checking ownership -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     project_update = DummyProjectUpdate(name="UpdatedName", description="UpdatedDesc")
@@ -445,7 +445,7 @@ def test_update_project_exception_is_project_from_user(monkeypatch):
 
 
 def test_update_project_exception_update_project(monkeypatch):
-    """Update project info for a user's project exception 2: devuelve la info del proyecto actualizado"""
+    """Update project DB error when updating -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     project_update = DummyProjectUpdate(name="UpdatedName", description="UpdatedDesc")
@@ -477,7 +477,7 @@ def test_update_project_exception_update_project(monkeypatch):
 
 
 def test_delete_project_success(monkeypatch):
-    """Delete a user's project: devuelve el proyecto eliminado"""
+    """Delete a user's project: returns deletion message"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -504,7 +504,7 @@ def test_delete_project_success(monkeypatch):
 
 
 def test_delete_project_not_found(monkeypatch):
-    """Delete a user's project not found: devuelve un error 404"""
+    """Delete project not found: 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -526,7 +526,7 @@ def test_delete_project_not_found(monkeypatch):
 
 
 def test_delete_project_not_owner(monkeypatch):
-    """Delete a user's project not owner: devuelve un error 404"""
+    """Delete project when not owner: 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -555,7 +555,7 @@ def test_delete_project_not_owner(monkeypatch):
 
 
 def test_delete_project_not_deleted(monkeypatch):
-    """Delete a user's project not deleted: devuelve un error 404"""
+    """Delete project failed to delete: 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -584,7 +584,7 @@ def test_delete_project_not_deleted(monkeypatch):
 
 
 def test_delete_project_exception_is_project_from_user(monkeypatch):
-    """Delete a user's project not deleted: devuelve un error 404"""
+    """Delete project DB error when checking ownership -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -606,7 +606,7 @@ def test_delete_project_exception_is_project_from_user(monkeypatch):
 
 
 def test_get_project_documents_success(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Get documents for a user's project: returns list of documents"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -640,7 +640,7 @@ def test_get_project_documents_success(monkeypatch):
 
 
 def test_get_project_documents_success_not_owner(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Get documents for a user's project (not owner): returns documents"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -674,7 +674,7 @@ def test_get_project_documents_success_not_owner(monkeypatch):
 
 
 def test_get_project_documents_not_found(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Get documents for a user's project: project not found -> 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -694,7 +694,7 @@ def test_get_project_documents_not_found(monkeypatch):
 
 
 def test_get_project_documents_no_documents(monkeypatch):
-    """Get documents for a user's project with no documents"""
+    """Get documents for a user's project with no documents -> 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -723,7 +723,7 @@ def test_get_project_documents_no_documents(monkeypatch):
 
 
 def test_get_project_documents_exception_is_project_from_user(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Get documents DB error when checking ownership -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -743,7 +743,7 @@ def test_get_project_documents_exception_is_project_from_user(monkeypatch):
 
 
 def test_get_project_documents_exception_get_documents_by_project(monkeypatch):
-    """Get documents for a user's project with no documents"""
+    """Get documents DB error retrieving documents -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -772,7 +772,7 @@ def test_get_project_documents_exception_get_documents_by_project(monkeypatch):
 
 
 def test_post_projects_documents_success(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Upload document to a project: returns created document"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
@@ -807,7 +807,7 @@ def test_post_projects_documents_success(monkeypatch):
 
 
 def test_post_projects_documents_not_found_project(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Upload document: project not found -> 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
@@ -828,7 +828,7 @@ def test_post_projects_documents_not_found_project(monkeypatch):
 
 
 def test_post_projects_documents_fail_create_document(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Upload document: create_document failed -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
@@ -862,7 +862,7 @@ def test_post_projects_documents_fail_create_document(monkeypatch):
 
 
 def test_post_projects_documents_exception_is_project_from_user(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Upload document DB error when checking project -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
@@ -883,7 +883,7 @@ def test_post_projects_documents_exception_is_project_from_user(monkeypatch):
 
 
 def test_post_projects_documents_exception_create_document(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Upload document DB error when creating document -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
@@ -917,7 +917,7 @@ def test_post_projects_documents_exception_create_document(monkeypatch):
 
 
 def test_post_projects_documents_exception_aws(monkeypatch):
-    """Get documents for a user's project: devuelve la lista de documentos"""
+    """Upload document AWS error while uploading -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     file = DummyUploadFile("mydoc.txt", b"hello world")
@@ -951,7 +951,7 @@ def test_post_projects_documents_exception_aws(monkeypatch):
 
 
 def test_invite_user_to_project_success(monkeypatch):
-    """Invite user to a project: devuelve el mensaje de invitación exitosa"""
+    """Invite user to a project: returns success message"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     user_id_to_invite = 2
@@ -996,7 +996,7 @@ def test_invite_user_to_project_success(monkeypatch):
 
 
 def test_invite_user_to_project_no_user_id(monkeypatch):
-    """Invite user to a project: devuelve el mensaje de invitación exitosa"""
+    """Invite user to a project: missing user_id -> 400"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
 
@@ -1014,7 +1014,7 @@ def test_invite_user_to_project_no_user_id(monkeypatch):
 
 
 def test_invite_user_to_project_not_owner(monkeypatch):
-    """Invite user to a project: devuelve el mensaje de invitación exitosa"""
+    """Invite user to a project: not owner -> 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     user_id_to_invite = 2
@@ -1052,7 +1052,7 @@ def test_invite_user_to_project_not_owner(monkeypatch):
 
 
 def test_invite_user_to_project_not_project(monkeypatch):
-    """Invite user to a project: devuelve el mensaje de invitación exitosa"""
+    """Invite user to a project: project not found -> 404"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     user_id_to_invite = 2
@@ -1087,7 +1087,7 @@ def test_invite_user_to_project_not_project(monkeypatch):
 
 
 def test_invite_user_to_project_already_invited(monkeypatch):
-    """Invite user to a project: devuelve el mensaje de invitación exitosa"""
+    """Invite user to a project: already a member -> 400"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     user_id_to_invite = 2
@@ -1128,7 +1128,7 @@ def test_invite_user_to_project_already_invited(monkeypatch):
 
 
 def test_invite_user_to_project_exception_is_project_from_user(monkeypatch):
-    """Invite user to a project: devuelve el mensaje de invitación exitosa"""
+    """Invite user DB error when checking membership -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     user_id_to_invite = 2
@@ -1153,7 +1153,7 @@ def test_invite_user_to_project_exception_is_project_from_user(monkeypatch):
 
 
 def test_invite_user_to_project_exception_is_project_from_user_case_2(monkeypatch):
-    """Invite user to a project: devuelve el mensaje de invitación exitosa"""
+    """Invite user DB error in the second membership check -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     user_id_to_invite = 2
@@ -1190,7 +1190,7 @@ def test_invite_user_to_project_exception_is_project_from_user_case_2(monkeypatc
 
 
 def test_invite_user_to_project_exception_create_user_project(monkeypatch):
-    """Invite user to a project: devuelve el mensaje de invitación exitosa"""
+    """Invite user DB error when creating user_project -> 500"""
     user = DummyUser(id=1, name="alice", password="secret")
     project_id = 1
     user_id_to_invite = 2

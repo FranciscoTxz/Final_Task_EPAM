@@ -16,7 +16,7 @@ class DummyUser:
 
 
 def test_signup_success(monkeypatch):
-    """Caso feliz: usuario nuevo -> se crea correctamente"""
+    """Happy case: new user -> created successfully"""
 
     test_user = UserCreate(name="alice", password="secret")
 
@@ -24,7 +24,7 @@ def test_signup_success(monkeypatch):
         return None
 
     async def fake_create_user(db, user):
-        # simular que devuelve el usuario creado
+        # simulate returning the created user
         return DummyUser(id=1, name=user.name, password=user.password)
 
     monkeypatch.setattr(user_crud, "get_user_by_name", fake_get_user_by_name)
@@ -37,7 +37,7 @@ def test_signup_success(monkeypatch):
 
 
 def test_signup_existing_user(monkeypatch):
-    """Si el nombre ya existe, se lanza HTTPException con status 400"""
+    """If the name already exists, raises HTTPException with status 400"""
 
     test_user = UserCreate(name="bob", password="secret")
 
@@ -53,7 +53,7 @@ def test_signup_existing_user(monkeypatch):
 
 
 def test_signup_no_name(monkeypatch):
-    """Si no se proporciona un nombre, se lanza HTTPException con status 400"""
+    """If no name is provided, raises HTTPException with status 400"""
 
     test_user = UserCreate(name="", password="secret")
 
@@ -64,7 +64,7 @@ def test_signup_no_name(monkeypatch):
 
 
 def test_signup_exception(monkeypatch):
-    """Si hay un error en la base de datos, se lanza HTTPException con status 500"""
+    """If there's a DB error, raises HTTPException with status 500"""
 
     test_user = UserCreate(name="bob", password="secret")
 
@@ -80,16 +80,16 @@ def test_signup_exception(monkeypatch):
 
 
 def test_login_success(monkeypatch):
-    """Login correcto: devuelve token y setea cookie/Authorization"""
+    """Successful login: returns token and sets cookie/Authorization"""
 
     test_user = UserCreate(name="alice", password="secret")
 
-    # usuario existente con password hasheada
+    # existing user with hashed password
     async def fake_get_user_by_name(db, name: str):
         return DummyUser(id=1, name=name, password=sha1("secret".encode()).hexdigest())
 
     monkeypatch.setattr(user_crud, "get_user_by_name", fake_get_user_by_name)
-    # asegurar SECRET_KEY en el módulo donde se usa
+    # ensure SECRET_KEY in the module where it's used
     monkeypatch.setattr(user_controller, "SECRET_KEY", "testskey")
 
     response = Response()
@@ -105,7 +105,7 @@ def test_login_success(monkeypatch):
 
 
 def test_login_wrong_password(monkeypatch):
-    """Si la contraseña es incorrecta debe lanzar HTTPException 400"""
+    """If password is incorrect, must raise HTTPException 400"""
 
     test_user = UserCreate(name="bob", password="wrongpass")
 
@@ -123,7 +123,7 @@ def test_login_wrong_password(monkeypatch):
 
 
 def test_login_user_not_found(monkeypatch):
-    """Si el usuario no existe debe lanzar HTTPException 404"""
+    """If the user doesn't exist, must raise HTTPException 404"""
 
     test_user = UserCreate(name="noexist", password="secret")
 
@@ -140,7 +140,7 @@ def test_login_user_not_found(monkeypatch):
 
 
 def test_login_not_name(monkeypatch):
-    """Si no se proporciona un nombre, se lanza HTTPException con status 400"""
+    """If no name is provided, raises HTTPException with status 400"""
 
     test_user = UserCreate(name="", password="secret")
 
@@ -153,7 +153,7 @@ def test_login_not_name(monkeypatch):
 
 
 def test_login_user_exception(monkeypatch):
-    """En caso de error en la BD, se lanza HTTPException 500"""
+    """In case of a DB error, raises HTTPException 500"""
 
     test_user = UserCreate(name="noexist", password="secret")
 

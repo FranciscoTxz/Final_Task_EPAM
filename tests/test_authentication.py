@@ -9,8 +9,8 @@ import asyncio
 
 
 def test_get_authentication_user_header_success(monkeypatch):
-    """get_authentication_user devuelve el usuario cuando el token es válido"""
-    # preparar token JWT con la misma SECRET_KEY que el módulo
+    """get_authentication_user returns the user when the token is valid"""
+    # prepare JWT token with the same SECRET_KEY as the module
     monkeypatch.setattr(authentication_module, "SECRET_KEY", "testskey")
 
     expire = datetime.now(timezone.utc) + timedelta(hours=1)
@@ -23,10 +23,10 @@ def test_get_authentication_user_header_success(monkeypatch):
     async def fake_get_user_by_name(db, name: str):
         return DummyUser(id=1, name=name, password="hashed")
 
-    # parchear la función CRUD usada por el módulo
+    # patch the CRUD function used by the module
     monkeypatch.setattr(crud_user, "get_user_by_name", fake_get_user_by_name)
 
-    # Llamar directamente a la dependencia pasando el header Authorization
+    # Call the dependency directly, passing the Authorization header
     result = asyncio.run(
         authentication_module.get_authentication_user(
             session_token=None, authorization=f"Bearer {token}", db=None
@@ -39,8 +39,8 @@ def test_get_authentication_user_header_success(monkeypatch):
 
 
 def test_get_authentication_user_cookie_success(monkeypatch):
-    """get_authentication_user devuelve el usuario cuando el token es válido"""
-    # preparar token JWT con la misma SECRET_KEY que el módulo
+    """get_authentication_user returns the user when the token is valid"""
+    # prepare JWT token with the same SECRET_KEY as the module
     monkeypatch.setattr(authentication_module, "SECRET_KEY", "testskey")
 
     expire = datetime.now(timezone.utc) + timedelta(hours=1)
@@ -53,10 +53,10 @@ def test_get_authentication_user_cookie_success(monkeypatch):
     async def fake_get_user_by_name(db, name: str):
         return DummyUser(id=1, name=name, password="hashed")
 
-    # parchear la función CRUD usada por el módulo
+    # patch the CRUD function used by the module
     monkeypatch.setattr(crud_user, "get_user_by_name", fake_get_user_by_name)
 
-    # Llamar directamente a la dependencia pasando el header Authorization
+    # Call the dependency directly, passing the session cookie token
     result = asyncio.run(
         authentication_module.get_authentication_user(
             session_token=token, authorization=None, db=None
@@ -69,7 +69,7 @@ def test_get_authentication_user_cookie_success(monkeypatch):
 
 
 def test_get_authentication_user_no_token(monkeypatch):
-    """get_authentication_user sin token: lanza HTTPException 401"""
+    """get_authentication_user without token: raises HTTPException 401"""
 
     with pytest.raises(HTTPException) as excinfo:
         asyncio.run(
@@ -82,8 +82,8 @@ def test_get_authentication_user_no_token(monkeypatch):
 
 
 def test_get_authentication_user_no_user(monkeypatch):
-    """get_authentication_user con token inválido: lanza HTTPException 401"""
-    # preparar token JWT con la misma SECRET_KEY que el módulo
+    """get_authentication_user with invalid token: raises HTTPException 401"""
+    # prepare JWT token with the same SECRET_KEY as the module
     monkeypatch.setattr(authentication_module, "SECRET_KEY", "testskey")
 
     expire = datetime.now(timezone.utc) + timedelta(hours=1)
@@ -104,8 +104,8 @@ def test_get_authentication_user_no_user(monkeypatch):
 
 
 def test_get_authentication_user_no_user_in_db(monkeypatch):
-    """get_authentication_user con token inválido: lanza HTTPException 401"""
-    # preparar token JWT con la misma SECRET_KEY que el módulo
+    """get_authentication_user with invalid token: raises HTTPException 401"""
+    # prepare JWT token with the same SECRET_KEY as the module
     monkeypatch.setattr(authentication_module, "SECRET_KEY", "testskey")
 
     expire = datetime.now(timezone.utc) + timedelta(hours=1)
@@ -116,9 +116,9 @@ def test_get_authentication_user_no_user_in_db(monkeypatch):
     )
 
     async def fake_get_user_by_name(db, name: str):
-        return []  # usuario no encontrado
+        return []  # user not found
 
-    # parchear la función CRUD usada por el módulo
+    # patch the CRUD function used by the module
     monkeypatch.setattr(crud_user, "get_user_by_name", fake_get_user_by_name)
 
     with pytest.raises(HTTPException) as excinfo:
@@ -132,8 +132,8 @@ def test_get_authentication_user_no_user_in_db(monkeypatch):
 
 
 def test_get_authentication_exception(monkeypatch):
-    """get_authentication_user con exception"""
-    # preparar token JWT con la misma SECRET_KEY que el módulo
+    """get_authentication_user with exception"""
+    # prepare JWT token with the same SECRET_KEY as the module
     monkeypatch.setattr(authentication_module, "SECRET_KEY", "testskey")
 
     expire = datetime.now(timezone.utc) + timedelta(hours=1)
@@ -146,7 +146,7 @@ def test_get_authentication_exception(monkeypatch):
     async def fake_get_user_by_name(db, name: str):
         raise Exception("DB error")
 
-    # parchear la función CRUD usada por el módulo
+    # patch the CRUD function used by the module
     monkeypatch.setattr(crud_user, "get_user_by_name", fake_get_user_by_name)
 
     with pytest.raises(HTTPException) as excinfo:

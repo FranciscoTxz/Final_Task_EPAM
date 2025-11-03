@@ -1,4 +1,4 @@
-# Etapa 1: builder para resolver dependencias
+# Stage 1: builder to resolve dependencies
 FROM python:3.12-slim AS builder
 
 ENV POETRY_VERSION=2.2.1 \
@@ -8,12 +8,12 @@ ENV POETRY_VERSION=2.2.1 \
     PIP_NO_CACHE_DIR=1 \
     PATH="/opt/poetry/bin:$PATH"
 
-# Paquetes del sistema necesarios para compilar deps nativas (ajusta según tu proyecto)
+# System packages required to build native deps (adjust according to your project)
 RUN apt-get update && apt-get install -y --no-install-recommends \
       curl build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar Poetry
+# Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
 WORKDIR /app
@@ -24,7 +24,7 @@ COPY pyproject.toml poetry.lock* /app/
 # Instalar dependencias (sin el propio paquete del proyecto)
 RUN poetry install --no-ansi --no-root
 
-# Etapa 2: runtime minimal
+# Stage 2: minimal runtime
 FROM python:3.12-slim AS runtime
 
 ENV POETRY_HOME="/opt/poetry" \
@@ -37,7 +37,7 @@ ENV POETRY_HOME="/opt/poetry" \
 
 
 
-# Dependencias del sistema mínimas en runtime (ajusta según libs usadas)
+# Minimal runtime system packages (adjust according to your libs)
 RUN apt-get update && apt-get install -y --no-install-recommends \
       curl \
     && rm -rf /var/lib/apt/lists/*
@@ -47,15 +47,15 @@ WORKDIR /app
 # Copiar binarios y site-packages desde builder (instalados a nivel del sistema)
 COPY --from=builder /usr/local /usr/local
 
-# Copiar el código de la app
+# Copy the app code
 COPY . /app
 
-# Instalar el paquete del proyecto (si quieres que sea importable como paquete)
-# Puedes omitir si no tienes package en pyproject
+# Install the project package (optional)
+# You can omit this if you don't have a package in pyproject
 RUN python -m pip install --no-cache-dir .
 
-# Exponer puerto
+# Expose port
 EXPOSE 8000
 
-# Uvicorn en producción; ajusta workers segun CPU y añade --reload solo en dev
+# Uvicorn in production; adjust workers according to CPU and add --reload only in dev
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

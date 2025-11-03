@@ -2,13 +2,12 @@ import sys
 import types
 import os
 
-# Forzar backend asyncio de anyio (evita intentar usar 'trio' si no está instalado)
+# Force AnyIO to use asyncio backend (avoid trying to use 'trio' if not installed)
 os.environ.setdefault("ANYIO_BACKEND", "asyncio")
 
-# Evitar la importación real de `app.database` durante la colección de pruebas
-# (la aplicación crea un engine que requiere asyncpg). Insertamos un módulo
-# falso en sys.modules antes de que los módulos de la app sean importados
-# por los tests.
+# Prevent importing the real `app.database` during test collection
+# (the app would create an engine that needs asyncpg). Insert a fake module
+# into sys.modules before app modules are imported by the tests.
 fake_db = types.ModuleType("app.database")
 
 
