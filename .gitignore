@@ -8,3 +8,5 @@ testdb.py
 .env
 example.txt
 .ruff_cache
+.pytest_cache
+test_con.py
