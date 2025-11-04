@@ -56,6 +56,8 @@ jobs:
       contents: write
       packages: write
       id-token: write
+    outputs:
+      semver_tag: ${{ steps.semver.outputs.next }}
     env:
       AWS_REGION: us-east-2
       ECR_REPOSITORY: tasks/final-task
@@ -124,3 +126,54 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           pull: true
+
+  deploy-ecs:
+    name: Deploy to ECS
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      AWS_REGION: us-east-2
+      ECS_CLUSTER: DevCluster
+      ECS_SERVICE: final-task-task-service-r5fa5qb8
+      ECS_TASK_DEF_FILE: deployments/ecs-task-definition.json
+      CONTAINER_NAME: fastapi-task
+      ECR_REPOSITORY: tasks/final-task
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Compute image URI to deploy
+        id: img
+        run: |
+          IMAGE="${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ needs.build-and-push.outputs.semver_tag }}"
+          echo "image=${IMAGE}" >> $GITHUB_OUTPUT
+
+      - name: Render ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEF_FILE }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.img.outputs.image }}
+
+      - name: Deploy ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true

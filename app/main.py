@@ -37,3 +37,8 @@ app.include_router(document_route.router)
 @app.get("/")
 async def healthcheck():
     return {"health": "OK"}
+
+
+@app.get("/s")
+async def sss():
+    return {"s": "OK"}

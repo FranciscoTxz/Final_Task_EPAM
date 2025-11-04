@@ -1,0 +1,43 @@
+{
+  "family": "final-task-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::281089586913:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::281089586913:role/ecsTaskExecutionRole",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "containerDefinitions": [
+    {
+      "name": "fastapi-task",
+      "image": "REPLACED_BY_CI",
+      "essential": true,
+      "portMappings": [
+        { "containerPort": 8000, "hostPort": 8000, "protocol": "tcp", "appProtocol": "http" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/final-task-task",
+          "awslogs-create-group": "true",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "environment": [
+        { "name": "INIT_DB_METHOD", "value": "ORM" },
+        { "name": "AWS_REGION", "value": "us-east-2" },
+        { "name": "AWS_BUCKET_NAME", "value": "doucments-final-task" }
+      ],
+      "secrets": [
+        { "name": "DATABASE_URL", "valueFrom": "arn:aws:secretsmanager:us-east-2:281089586913:secret:database-url-BptZIv" },
+        { "name": "SECRET_KEY", "valueFrom": "arn:aws:secretsmanager:us-east-2:281089586913:secret:secret-key-wR61BH" },
+        { "name": "AWS_ACCESS_KEY", "valueFrom": "arn:aws:secretsmanager:us-east-2:281089586913:secret:aws-access-key-h7GMKS" },
+        { "name": "AWS_SECRET_KEY", "valueFrom": "arn:aws:secretsmanager:us-east-2:281089586913:secret:aws-secret-key-EGP0du" }
+      ]
+    }
+  ]
+}
