@@ -57,7 +57,7 @@ jobs:
       packages: write
       id-token: write
     env:
-      AWS_REGION: us-east-1
+      AWS_REGION: us-east-2
       ECR_REPOSITORY: tasks/final-task
       DOCKERHUB_IMAGE: docker.io/samaelxz/final_task_python_s
     steps:
