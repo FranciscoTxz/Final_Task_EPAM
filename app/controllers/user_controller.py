@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, Response
 import jwt
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.user_schema import UserCreate
 from app.crud import user_crud as crud_user
 from hashlib import sha1
 from ..config import SECRET_KEY
 
 
-async def signup_user(user: UserCreate, db: Session):
+async def signup_user(user: UserCreate, db: AsyncSession):
     try:
         if not user.name or not user.password:
             raise HTTPException(status_code=400, detail="Name and password are required")
@@ -24,7 +24,7 @@ async def signup_user(user: UserCreate, db: Session):
         raise HTTPException(status_code=500, detail=f"Failed to create user: {str(e)}")
 
 
-async def login_user(user: UserCreate, response: Response, db: Session):
+async def login_user(user: UserCreate, response: Response, db: AsyncSession):
     try:
         if not user.name or not user.password:
             raise HTTPException(status_code=400, detail="Name and password are required")

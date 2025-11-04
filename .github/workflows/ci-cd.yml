@@ -53,13 +53,18 @@ jobs:
     needs: lint-test
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # necesario para crear/actualizar tags de Git
+      contents: write
       packages: write
+      id-token: write
+    env:
+      AWS_REGION: us-east-1
+      ECR_REPOSITORY: tasks/final-task
+      DOCKERHUB_IMAGE: docker.io/samaelxz/final_task_python_s
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # necesario para ver todos los tags
+          fetch-depth: 0 
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -88,6 +93,17 @@ jobs:
           git config user.email "github-actions@users.noreply.github.com"
           git tag ${{ steps.semver.outputs.next }}
           git push origin ${{ steps.semver.outputs.next }}
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -96,13 +112,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push (only semver tag)
+      - name: Build and push (Docker Hub + ECR)
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: docker.io/samaelxz/final_task_python_s:${{ steps.semver.outputs.next }}
+          tags: |
+            ${{ env.DOCKERHUB_IMAGE }}:${{ steps.semver.outputs.next }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.semver.outputs.next }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           pull: true

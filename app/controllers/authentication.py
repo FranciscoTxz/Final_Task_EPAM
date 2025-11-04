@@ -1,5 +1,5 @@
 from fastapi import Cookie, Depends, Header, HTTPException
-from pytest import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.dependencies import get_db
 from ..config import SECRET_KEY
 import jwt
@@ -9,7 +9,7 @@ from app.crud import user_crud as crud_user
 async def get_authentication_user(
     session_token: str = Cookie(None),
     authorization: str | None = Header(None),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     token = None
 

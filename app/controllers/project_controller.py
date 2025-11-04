@@ -1,5 +1,5 @@
 from fastapi import HTTPException, File
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user_model import User
 from app.schemas.project_schema import (
     ProjectCreate,
@@ -12,7 +12,7 @@ from app.crud import user_project_crud as crud_user_project
 from app.crud import document_crud as crud_documents
 
 
-async def get_project(user: User, db: Session):
+async def get_project(user: User, db: AsyncSession):
     try:
         db_projects = await crud_user_project.get_user_projects(db, user.id)
     except Exception as e:
@@ -27,7 +27,7 @@ async def get_project(user: User, db: Session):
 async def create_project(
     project: ProjectCreate,
     user: User,
-    db: Session,
+    db: AsyncSession,
 ):
     if not project.name or not project.description:
         raise HTTPException(status_code=400, detail="Name and description are required")
@@ -51,7 +51,7 @@ async def create_project(
     }
 
 
-async def get_project_info(project_id: int, user: User, db: Session):
+async def get_project_info(project_id: int, user: User, db: AsyncSession):
     try:
         db_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -66,7 +66,7 @@ async def get_project_info(project_id: int, user: User, db: Session):
 
 
 async def update_project(
-    project_id: int, project: ProjectUpdate, user: User, db: Session
+    project_id: int, project: ProjectUpdate, user: User, db: AsyncSession
 ):
     try:
         db_user_project = await crud_user_project.is_project_from_user(
@@ -88,7 +88,7 @@ async def update_project(
     return updated_project
 
 
-async def delete_project(project_id: int, user: User, db: Session):
+async def delete_project(project_id: int, user: User, db: AsyncSession):
     try:
         db_user_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -107,7 +107,7 @@ async def delete_project(project_id: int, user: User, db: Session):
     return {"message": f"Project with ID {deleted_project.id} deleted successfully"}
 
 
-async def get_project_documents(project_id: int, user: User, db: Session):
+async def get_project_documents(project_id: int, user: User, db: AsyncSession):
     try:
         db_user_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -126,7 +126,7 @@ async def get_project_documents(project_id: int, user: User, db: Session):
     return documents
 
 
-async def create_project_document(project_id: int, file: File, user: User, db: Session):
+async def create_project_document(project_id: int, file: File, user: User, db: AsyncSession):
     try:
         db_user_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -150,7 +150,7 @@ async def create_project_document(project_id: int, file: File, user: User, db: S
     return new_document
 
 
-async def invite_user_to_project(project_id: int, user_id: int, user: User, db: Session):
+async def invite_user_to_project(project_id: int, user_id: int, user: User, db: AsyncSession):
     try:
         if not user_id:
             raise HTTPException(status_code=400, detail="User ID is required to invite")

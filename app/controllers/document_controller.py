@@ -1,5 +1,5 @@
 from fastapi import HTTPException, File
-from pytest import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user_model import User
 from app.crud import document_crud as crud_document
 from app.crud import user_project_crud as crud_user_project
@@ -10,7 +10,7 @@ from app.crud.aws_crud import delete_file_from_s3, upload_file_to_s3
 async def get_document(
     document_id: int,
     user: User,
-    db: Session,
+    db: AsyncSession,
 ):
     try:
         db_document = await crud_document.get_document_by_id(db, document_id)
@@ -34,7 +34,7 @@ async def update_document(
     document_id: int,
     file: File,
     user: User,
-    db: Session,
+    db: AsyncSession,
 ):
     try:
         db_document = await crud_document.get_document_by_id(db, document_id)
@@ -61,7 +61,7 @@ async def update_document(
 async def delete_document(
     document_id: int,
     user: User,
-    db: Session,
+    db: AsyncSession,
 ):
     try:
         db_document = await crud_document.get_document_by_id(db, document_id)
