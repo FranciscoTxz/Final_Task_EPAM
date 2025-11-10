@@ -9,6 +9,18 @@ from ..config import SECRET_KEY
 
 
 async def signup_user(user: UserCreate, db: AsyncSession):
+    """Create a new user account after validating input and ensuring the username is unique.
+
+    Args:
+        user: Incoming user payload with name and password.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        message: A message confirming successful user creation.
+
+    Raises:
+        HTTPException: 400 if required fields are missing or the name is already registered; 500 on unexpected errors.
+    """
     try:
         if not user.name or not user.password:
             raise HTTPException(status_code=400, detail="Name and password are required")
@@ -25,6 +37,21 @@ async def signup_user(user: UserCreate, db: AsyncSession):
 
 
 async def login_user(user: UserCreate, response: Response, db: AsyncSession):
+    """Authenticate a user, issue a short-lived JWT, and set it in both a cookie and the Authorization header.
+
+    Args:
+        user: Incoming user payload with name and password.
+        response: FastAPI Response used to set the session cookie and headers.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        message: A message confirming successful login.
+        access_token: The generated JWT access token.
+
+    Raises:
+        HTTPException: 400 for missing fields or incorrect password; 404 if the user is not found;
+        500 on unexpected errors.
+    """
     try:
         if not user.name or not user.password:
             raise HTTPException(status_code=400, detail="Name and password are required")

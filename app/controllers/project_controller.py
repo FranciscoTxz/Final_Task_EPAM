@@ -13,6 +13,18 @@ from app.crud import document_crud as crud_documents
 
 
 async def get_project(user: User, db: AsyncSession):
+    """Retrieve all projects the authenticated user belongs to.
+
+    Args:
+        user: Authenticated user whose projects are being retrieved.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        db_projects: The list of projects the authenticated user belongs to.
+
+    Raises:
+        HTTPException: 404 if the user has no projects; 500 on unexpected errors.
+    """
     try:
         db_projects = await crud_user_project.get_user_projects(db, user.id)
     except Exception as e:
@@ -29,6 +41,19 @@ async def create_project(
     user: User,
     db: AsyncSession,
 ):
+    """Create a new project and assign ownership to the authenticated user.
+
+    Args:
+        project: Incoming project payload containing name and description.
+        user: Authenticated user creating the project.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        message: A message including the creator's name, project name, and the new project ID.
+
+    Raises:
+        HTTPException: 400 if the payload is invalid or the project already exists; 500 on unexpected errors.
+    """
     if not project.name or not project.description:
         raise HTTPException(status_code=400, detail="Name and description are required")
     db_project = await crud_project.get_project_by_name(db, name=project.name)
@@ -52,6 +77,19 @@ async def create_project(
 
 
 async def get_project_info(project_id: int, user: User, db: AsyncSession):
+    """Retrieve detailed info for a project the authenticated user is a member of.
+
+    Args:
+        project_id: ID of the project to fetch.
+        user: Authenticated user requesting the project.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        db_project.project: The project instance owned by or shared with the user.
+
+    Raises:
+        HTTPException: 404 if the project is not found for the user; 500 on unexpected errors.
+    """
     try:
         db_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -68,6 +106,20 @@ async def get_project_info(project_id: int, user: User, db: AsyncSession):
 async def update_project(
     project_id: int, project: ProjectUpdate, user: User, db: AsyncSession
 ):
+    """Update a project's name and description if the authenticated user is the owner.
+
+    Args:
+        project_id: ID of the project to update.
+        project: Payload with optional name and description updates.
+        user: Authenticated user performing the update (must be owner).
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        updated_project: The updated project instance.
+
+    Raises:
+        HTTPException: 404 if the project is not found or user is not owner; 500 on unexpected errors.
+    """
     try:
         db_user_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -89,6 +141,19 @@ async def update_project(
 
 
 async def delete_project(project_id: int, user: User, db: AsyncSession):
+    """Delete a project if the authenticated user is the owner.
+
+    Args:
+        project_id: ID of the project to delete.
+        user: Authenticated user performing the deletion (must be owner).
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        message: A message confirming the deleted project ID.
+
+    Raises:
+        HTTPException: 404 if the project is not found or user is not owner; 500 on unexpected errors.
+    """
     try:
         db_user_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -108,6 +173,19 @@ async def delete_project(project_id: int, user: User, db: AsyncSession):
 
 
 async def get_project_documents(project_id: int, user: User, db: AsyncSession):
+    """List all documents belonging to a project the authenticated user is a member of.
+
+    Args:
+        project_id: ID of the project whose documents are requested.
+        user: Authenticated user requesting the documents.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        documents: The list of documents associated with the project.
+
+    Raises:
+        HTTPException: 404 if the project is not found for the user or no documents exist; 500 on unexpected errors.
+    """
     try:
         db_user_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -116,7 +194,9 @@ async def get_project_documents(project_id: int, user: User, db: AsyncSession):
             raise HTTPException(status_code=404, detail="Project not found")
         documents = await crud_documents.get_documents_by_project(db, project_id)
         if not documents:
-            raise HTTPException(status_code=404, detail="No documents found for project")
+            raise HTTPException(
+                status_code=404, detail="No documents found for project"
+            )
     except HTTPException:
         raise
     except Exception as e:
@@ -126,7 +206,23 @@ async def get_project_documents(project_id: int, user: User, db: AsyncSession):
     return documents
 
 
-async def create_project_document(project_id: int, file: File, user: User, db: AsyncSession):
+async def create_project_document(
+    project_id: int, file: File, user: User, db: AsyncSession
+):
+    """Create a new document for a project by uploading the file and storing its metadata.
+
+    Args:
+        project_id: ID of the project where the document will be created.
+        file: Uploaded file to store and reference in the document.
+        user: Authenticated user creating the document.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        new_document: The created document instance with name and URL.
+
+    Raises:
+        HTTPException: 404 if the project is not found for the user; 500 on upload or persistence errors.
+    """
     try:
         db_user_project = await crud_user_project.is_project_from_user(
             db, user.id, project_id
@@ -150,7 +246,24 @@ async def create_project_document(project_id: int, file: File, user: User, db: A
     return new_document
 
 
-async def invite_user_to_project(project_id: int, user_id: int, user: User, db: AsyncSession):
+async def invite_user_to_project(
+    project_id: int, user_id: int, user: User, db: AsyncSession
+):
+    """Invite a user to join a project if the authenticated user is the owner.
+
+    Args:
+        project_id: ID of the project to invite the user to.
+        user_id: ID of the user being invited.
+        user: Authenticated user sending the invitation (must be owner).
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        message: A message confirming the invited user and project ID.
+
+    Raises:
+        HTTPException: 400 if the user ID is missing or the user is already a member;
+        404 if the project is not found or user is not owner; 500 on unexpected errors.
+    """
     try:
         if not user_id:
             raise HTTPException(status_code=400, detail="User ID is required to invite")

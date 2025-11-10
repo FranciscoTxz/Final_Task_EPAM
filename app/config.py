@@ -14,6 +14,7 @@ INIT_DB_METHOD = os.getenv("INIT_DB_METHOD", "ORM")
 
 
 def use_sql_init() -> bool:
+    """Read variable to create the db with orm or sql"""
     env = INIT_DB_METHOD.lower()
     if env == "sql":
         return True

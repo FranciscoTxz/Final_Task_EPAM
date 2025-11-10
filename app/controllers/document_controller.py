@@ -12,6 +12,19 @@ async def get_document(
     user: User,
     db: AsyncSession,
 ):
+    """Return the document instance if it exists and belongs to a project the user is a member of.
+
+    Args:
+        document_id: ID of the document to retrieve.
+        user: Authenticated user requesting the document.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        db_document: The document instance if it exists and belongs to a project the user is a member of.
+
+    Raises:
+        HTTPException: 404 if the document does not exist or does not belong to the user; 500 on unexpected errors.
+    """
     try:
         db_document = await crud_document.get_document_by_id(db, document_id)
         if not db_document:
@@ -36,6 +49,20 @@ async def update_document(
     user: User,
     db: AsyncSession,
 ):
+    """Return the updated document after replacing its stored file and metadata.
+
+    Args:
+        document_id: ID of the document to update.
+        file: Uploaded file used to replace the existing document content.
+        user: Authenticated user requesting the update.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        db_document: The updated document instance with new name and URL.
+
+    Raises:
+        HTTPException: 404 if the document does not exist or does not belong to the user; 500 on unexpected errors.
+    """
     try:
         db_document = await crud_document.get_document_by_id(db, document_id)
         if not db_document:
@@ -63,6 +90,19 @@ async def delete_document(
     user: User,
     db: AsyncSession,
 ):
+    """Delete a document and its associated file from storage.
+
+    Args:
+        document_id: ID of the document to delete.
+        user: Authenticated user requesting the deletion.
+        db: Async SQLAlchemy session used for database access.
+
+    Returns:
+        None: The operation completes without returning a value.
+
+    Raises:
+        HTTPException: 404 if the document does not exist or does not belong to the user; 500 on unexpected errors.
+    """
     try:
         db_document = await crud_document.get_document_by_id(db, document_id)
         if not db_document:
