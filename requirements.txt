@@ -53,3 +53,4 @@ watchfiles
 websockets        
 wheel             
 pytest-cov
+ruff

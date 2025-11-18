@@ -4,7 +4,7 @@ import jwt
 import pytest
 from fastapi import HTTPException
 from datetime import datetime, timedelta, timezone
-from tests.test_users import DummyUser
+from tests.dummies import DummyUser
 import asyncio
 
 
