@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    """Return database session"""
     async with AsyncSessionLocal() as session:
         try:
             yield session

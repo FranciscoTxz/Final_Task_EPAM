@@ -21,6 +21,7 @@ router = APIRouter(prefix="/projects", tags=["projects"])
 async def get_projects(
     user: User = Depends(get_authentication_user), db: AsyncSession = Depends(get_db)
 ):
+    """List the authenticated user's project memberships."""
     return await project_controller.get_project(user, db)
 
 
@@ -30,6 +31,7 @@ async def create_project(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Create a new project and assign ownership to the authenticated user."""
     return await project_controller.create_project(project, user, db)
 
 
@@ -42,6 +44,7 @@ async def get_project_info(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Retrieve basic information about a project the user belongs to."""
     return await project_controller.get_project_info(project_id, user, db)
 
 
@@ -52,6 +55,7 @@ async def update_project(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Update a project's name and description if the user is the owner."""
     return await project_controller.update_project(project_id, project, user, db)
 
 
@@ -61,6 +65,7 @@ async def delete_project(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Delete a project if the authenticated user is the owner."""
     return await project_controller.delete_project(project_id, user, db)
 
 
@@ -70,6 +75,7 @@ async def get_project_documents(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """List all documents for a given project the user belongs to."""
     return await project_controller.get_project_documents(project_id, user, db)
 
 
@@ -82,6 +88,7 @@ async def create_project_document(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Create a new document in a project by uploading a file and saving its metadata."""
     return await project_controller.create_project_document(project_id, file, user, db)
 
 
@@ -94,4 +101,5 @@ async def invite_user_to_project(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Invite another user to join a project if the authenticated user is the owner."""
     return await project_controller.invite_user_to_project(project_id, user_id, user, db)

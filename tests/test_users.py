@@ -6,13 +6,7 @@ from app.crud import user_crud
 from fastapi import HTTPException, Response
 import asyncio
 from hashlib import sha1
-
-
-class DummyUser:
-    def __init__(self, id: int, name: str, password: str):
-        self.id = id
-        self.name = name
-        self.password = password
+import tests.dummies as dummies
 
 
 def test_signup_success(monkeypatch):
@@ -25,7 +19,7 @@ def test_signup_success(monkeypatch):
 
     async def fake_create_user(db, user):
         # simulate returning the created user
-        return DummyUser(id=1, name=user.name, password=user.password)
+        return dummies.DummyUser(id=1, name=user.name, password=user.password)
 
     monkeypatch.setattr(user_crud, "get_user_by_name", fake_get_user_by_name)
     monkeypatch.setattr(user_crud, "create_user", fake_create_user)
@@ -42,7 +36,7 @@ def test_signup_existing_user(monkeypatch):
     test_user = UserCreate(name="bob", password="secret")
 
     async def fake_get_user_by_name(db, name: str):
-        return DummyUser(id=2, name=name, password="hashed")
+        return dummies.DummyUser(id=2, name=name, password="hashed")
 
     monkeypatch.setattr(user_crud, "get_user_by_name", fake_get_user_by_name)
 
@@ -86,7 +80,7 @@ def test_login_success(monkeypatch):
 
     # existing user with hashed password
     async def fake_get_user_by_name(db, name: str):
-        return DummyUser(id=1, name=name, password=sha1("secret".encode()).hexdigest())
+        return dummies.DummyUser(id=1, name=name, password=sha1("secret".encode()).hexdigest())
 
     monkeypatch.setattr(user_crud, "get_user_by_name", fake_get_user_by_name)
     # ensure SECRET_KEY in the module where it's used
@@ -111,7 +105,7 @@ def test_login_wrong_password(monkeypatch):
 
     async def fake_get_user_by_name(db, name: str):
         # stored password is different
-        return DummyUser(id=2, name=name, password="someotherhash")
+        return dummies.DummyUser(id=2, name=name, password="someotherhash")
 
     monkeypatch.setattr(user_crud, "get_user_by_name", fake_get_user_by_name)
     monkeypatch.setattr(user_controller, "SECRET_KEY", "testskey")

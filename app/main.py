@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from app.routers import user_route, project_route, document_route
 from app.database import Base, engine
-from app.config import (
-    use_sql_init,
+from app.config import use_sql_init
+from app.sql.squema import (
     create_users_table,
     create_projects_table,
     create_documents_table,
-    create_users_projects_table,
-)
+    create_users_projects_table)
 from sqlalchemy import text
 
 app = FastAPI()

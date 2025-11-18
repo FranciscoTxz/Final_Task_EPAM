@@ -16,6 +16,7 @@ async def get_document(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Retrieve a document by ID for the authenticated user."""
     return await document_controller.get_document(document_id, user, db)
 
 
@@ -26,6 +27,7 @@ async def update_document(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Update a document's file and metadata for the authenticated user."""
     return await document_controller.update_document(document_id, file, user, db)
 
 
@@ -35,4 +37,5 @@ async def delete_document(
     user: User = Depends(get_authentication_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """Delete a document by ID for the authenticated user."""
     return await document_controller.delete_document(document_id, user, db)

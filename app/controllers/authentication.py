@@ -11,6 +11,21 @@ async def get_authentication_user(
     authorization: str | None = Header(None),
     db: AsyncSession = Depends(get_db),
 ):
+    """Return the authenticated user from a JWT found in the Authorization header (Bearer) or a session cookie.
+
+    Args:
+        session_token: Optional session token read from the 'session_token' cookie, used if no Bearer token is provided.
+        authorization: Optional HTTP Authorization header value in the form 'Bearer <token>'.
+        db: Async SQLAlchemy session dependency used to fetch the user.
+
+    Returns:
+        The authenticated user instance retrieved from the database.
+
+    Raises:
+        HTTPException: With status code 401 if no token is provided, the token is invalid,
+        or the user cannot be found; with status code 500 for unexpected authentication errors.
+    """
+
     token = None
 
     if authorization:

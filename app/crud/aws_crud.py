@@ -5,7 +5,17 @@ import uuid
 
 
 async def upload_file_to_s3(file: UploadFile) -> str:
-    """Upload a file to S3 and return the URL"""
+    """Upload a file to Amazon S3 with a unique name and return its public URL.
+
+    Args:
+        file: Incoming uploaded file to store in S3.
+
+    Returns:
+        url: The public URL of the uploaded file.
+
+    Raises:
+        Exception: On any failure during upload or URL generation.
+    """
     try:
         # Generate unique filename
         file_extension = file.filename.split(".")[-1]
@@ -28,7 +38,17 @@ async def upload_file_to_s3(file: UploadFile) -> str:
 
 
 async def delete_file_from_s3(url: str) -> bool:
-    """Delete a file from S3 using its URL"""
+    """Delete a file from Amazon S3 using its public URL.
+
+    Args:
+        url: The public URL of the file to delete.
+
+    Returns:
+        True: Indicates the file was successfully deleted.
+
+    Raises:
+        Exception: On any failure during key extraction or deletion.
+    """
     try:
         # Extract key from URL
         key = url.split("/")[-1]
